@@ -1,0 +1,891 @@
+/* =============================================================
+   To-Do Life Dashboard — style.css
+   Single stylesheet. All theming is controlled via CSS custom
+   properties (variables) defined below.
+   Requirements: 9.1, 9.2
+   ============================================================= */
+
+/* =============================================================
+   1. CSS CUSTOM PROPERTIES — LIGHT THEME (default)
+   Applied when data-theme="light" OR when no attribute is set.
+   ============================================================= */
+:root {
+  /* --- Colour palette --- */
+  --color-bg:           #f5f5f5;
+  --color-surface:      #ffffff;
+  --color-surface-alt:  #f0f0f0;
+  --color-border:       #dde1e7;
+  --color-shadow:       rgba(0, 0, 0, 0.08);
+
+  /* --- Text --- */
+  --color-text-primary:   #1a1a2e;
+  --color-text-secondary: #555770;
+  --color-text-muted:     #888a9a;
+  --color-text-on-accent: #ffffff;
+
+  /* --- Accent / interactive --- */
+  --color-accent:         #4f46e5;   /* indigo-600 */
+  --color-accent-hover:   #4338ca;   /* indigo-700 */
+  --color-accent-light:   #eef2ff;   /* indigo-50  */
+  --color-success:        #16a34a;
+  --color-danger:         #dc2626;
+  --color-danger-hover:   #b91c1c;
+  --color-warning:        #d97706;
+
+  /* --- Timer states --- */
+  --color-timer-idle:       var(--color-text-primary);
+  --color-timer-running:    #16a34a;
+  --color-timer-paused:     #d97706;
+  --color-timer-completed:  #dc2626;
+
+  /* --- Todo states --- */
+  --todo-completed-opacity: 0.45;
+
+  /* --- Typography --- */
+  --font-sans:  'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono:  'Courier New', Courier, monospace;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+
+  /* --- Spacing --- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* --- Layout --- */
+  --widget-radius:  0.75rem;
+  --btn-radius:     0.375rem;
+  --input-radius:   0.375rem;
+  --max-content-w:  1200px;
+  --widget-gap:     var(--space-6);
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-theme:  300ms ease;
+}
+
+/* =============================================================
+   2. CSS CUSTOM PROPERTIES — DARK THEME OVERRIDES
+   Applied when the <html> element carries data-theme="dark".
+   Only values that differ from the light theme need listing.
+   ============================================================= */
+[data-theme="dark"] {
+  /* --- Colour palette --- */
+  --color-bg:           #0f0f1a;
+  --color-surface:      #1a1a2e;
+  --color-surface-alt:  #16213e;
+  --color-border:       #2a2a4a;
+  --color-shadow:       rgba(0, 0, 0, 0.35);
+
+  /* --- Text --- */
+  --color-text-primary:   #e8e8f4;
+  --color-text-secondary: #a9abbb;
+  --color-text-muted:     #6b6d7f;
+  --color-text-on-accent: #ffffff;
+
+  /* --- Accent / interactive --- */
+  --color-accent:         #818cf8;   /* indigo-400 */
+  --color-accent-hover:   #6366f1;   /* indigo-500 */
+  --color-accent-light:   #1e1b4b;   /* indigo-950 */
+  --color-success:        #4ade80;
+  --color-danger:         #f87171;
+  --color-danger-hover:   #ef4444;
+  --color-warning:        #fbbf24;
+
+  /* --- Timer states --- */
+  --color-timer-idle:       var(--color-text-primary);
+  --color-timer-running:    #4ade80;
+  --color-timer-paused:     #fbbf24;
+  --color-timer-completed:  #f87171;
+
+  /* --- Todo states --- */
+  --todo-completed-opacity: 0.38;
+}
+
+/* =============================================================
+   3. RESET / BASE STYLES
+   ============================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Smooth theme colour transitions — applied to the root element */
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  /* Prevent layout shift from scrollbar appearance */
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* =============================================================
+   4. LAYOUT — APP SHELL
+   ============================================================= */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 4px var(--color-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color var(--transition-theme), border-color var(--transition-theme);
+}
+
+.app-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: -0.02em;
+}
+
+.app-main {
+  max-width: var(--max-content-w);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: grid;
+  gap: var(--widget-gap);
+  /* Responsive 2-column layout; single column on narrow viewports */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+  align-items: start;
+}
+
+.app-footer {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  border-top: 1px solid var(--color-border);
+  transition: border-color var(--transition-theme);
+}
+
+/* =============================================================
+   5. WIDGET — SHARED CARD SHELL
+   All four widgets share this base card style.
+   ============================================================= */
+.widget {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--widget-radius);
+  padding: var(--space-6);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  transition:
+    background-color var(--transition-theme),
+    border-color var(--transition-theme),
+    box-shadow var(--transition-theme);
+}
+
+.widget-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color var(--transition-theme);
+}
+
+/* =============================================================
+   6. GREETING WIDGET
+   ============================================================= */
+.greeting-widget {
+  /* Spans full width on 2-column grid to draw more attention */
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.greeting-clock {
+  margin-bottom: var(--space-2);
+}
+
+.greeting-time {
+  font-family: var(--font-mono);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  /* Reserve fixed width to prevent layout shift each second */
+  display: inline-block;
+  min-width: 7ch;
+  letter-spacing: 0.05em;
+}
+
+.greeting-date {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.greeting-text {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+  /* Reserve height so layout is stable before name is loaded */
+  min-height: 2.5rem;
+}
+
+/* =============================================================
+   7. FOCUS TIMER WIDGET
+   ============================================================= */
+.focus-timer-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.timer-display {
+  margin: var(--space-4) 0;
+}
+
+.timer-time {
+  font-family: var(--font-mono);
+  /* Large, fixed-width so digits don't cause layout shift */
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-timer-idle);
+  display: inline-block;
+  min-width: 6ch;
+  text-align: center;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-normal);
+}
+
+/* Timer running state */
+.timer-time.is-running {
+  color: var(--color-timer-running);
+}
+
+/* Timer paused state */
+.timer-time.is-paused {
+  color: var(--color-timer-paused);
+}
+
+/* Timer completed state */
+.timer-time.is-completed {
+  color: var(--color-timer-completed);
+}
+
+.timer-status {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-timer-completed);
+  min-height: 1.5em; /* prevent layout shift when message appears */
+  text-align: center;
+}
+
+.timer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.timer-duration-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================================
+   8. TODO MANAGER WIDGET
+   ============================================================= */
+.todo-widget {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.todo-input-container {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Individual todo item — rendered by task 7.3 */
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--btn-radius);
+  transition:
+    background-color var(--transition-theme),
+    border-color var(--transition-theme),
+    opacity var(--transition-normal);
+}
+
+/* Completed todo — text struck-through, reduced opacity */
+.todo-item.is-completed {
+  opacity: var(--todo-completed-opacity);
+}
+
+.todo-item.is-completed .todo-text {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: var(--text-base);
+  word-break: break-word;
+  transition: color var(--transition-fast);
+}
+
+/* =============================================================
+   9. LINK MANAGER WIDGET
+   ============================================================= */
+.link-widget {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.link-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Individual quick-link button — rendered by task 8.3 */
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-accent-light);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--btn-radius);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.link-btn:hover,
+.link-btn:focus {
+  background-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+  text-decoration: none;
+}
+
+/* =============================================================
+   10. SHARED BUTTON STYLES
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--btn-radius);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Primary */
+.btn-primary {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* Secondary / ghost */
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:not(:disabled):hover {
+  background-color: var(--color-surface-alt);
+  border-color: var(--color-text-muted);
+}
+
+/* Danger */
+.btn-danger {
+  background-color: transparent;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-danger:not(:disabled):hover {
+  background-color: var(--color-danger);
+  color: var(--color-text-on-accent);
+}
+
+/* Small size modifier */
+.btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+}
+
+/* =============================================================
+   11. SHARED FORM / INPUT STYLES
+   ============================================================= */
+.input-text {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--input-radius);
+  font-size: var(--text-base);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+.input-text:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.input-text::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Validation error state */
+.input-text.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.input-text.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+/* Inline error/help text below an input */
+.field-error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+  min-height: 1.2em; /* prevent layout shift */
+}
+
+/* =============================================================
+   12. THEME TOGGLE (task 3.2)
+   ============================================================= */
+#theme-toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--btn-radius);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  /* Use theme-aware colours so it adapts to both modes */
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus-visible {
+  background-color: var(--color-accent-light);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  outline: none;
+}
+
+.theme-toggle-btn:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+/* Hide the text label on very narrow screens (≤ 360 px) to save space */
+@media (max-width: 360px) {
+  .theme-toggle-label {
+    display: none;
+  }
+}
+
+/* =============================================================
+   13. RESPONSIVE BREAKPOINTS
+   ============================================================= */
+
+/* Narrow mobile — ≤ 480 px */
+@media (max-width: 480px) {
+  .app-main {
+    padding: var(--space-4) var(--space-4);
+    grid-template-columns: 1fr;
+  }
+
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .greeting-time {
+    font-size: var(--text-3xl);
+  }
+
+  .timer-time {
+    font-size: var(--text-3xl);
+  }
+}
+
+/* Tablet — 481 px – 768 px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Desktop — ≥ 769 px: greeting spans full width, other widgets in 2-col */
+@media (min-width: 769px) {
+  .greeting-widget {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Wide desktop — ≥ 1440 px */
+@media (min-width: 1440px) {
+  .app-main {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+/* =============================================================
+   14. REDUCED MOTION — respect user preference
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================================
+   15. NAME INPUT FORM — GreetingWidget (task 4.3)
+   Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+   ============================================================= */
+#greeting-name-form-container {
+  margin-top: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.name-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 360px;
+}
+
+.name-form__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.name-form__row {
+  display: flex;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.name-form__input {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--input-radius);
+  font-size: var(--text-base);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+.name-form__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.name-form__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.name-form__input.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.name-form__submit {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.name-form__error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  min-height: 1.2em; /* prevent layout shift when error appears/disappears */
+}
+
+/* Change-name button container */
+#greeting-name-actions {
+  margin-top: var(--space-3);
+  display: flex;
+  justify-content: center;
+}
+
+.change-name-btn {
+  font-size: var(--text-sm);
+}
+
+/* =============================================================
+   16. DURATION INPUT FORM — FocusTimer (task 6.4)
+   Requirements: 4.1, 4.2, 4.3, 4.5, 4.6, 4.7
+   ============================================================= */
+
+/* Outer wrapper already in HTML as .timer-duration-container;
+   the form is injected inside it by _renderDurationForm(). */
+.duration-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.duration-form__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.duration-form__row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* Number input — narrow fixed width, centred digits */
+.duration-form__input {
+  width: 5rem;
+  padding: var(--space-2) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--input-radius);
+  font-size: var(--text-base);
+  font-family: var(--font-mono);
+  text-align: center;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+  /* Remove browser default spin-button arrows on some engines */
+  -moz-appearance: textfield;
+}
+
+.duration-form__input::-webkit-inner-spin-button,
+.duration-form__input::-webkit-outer-spin-button {
+  opacity: 1; /* keep visible so users can still click them */
+}
+
+.duration-form__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.duration-form__input.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.duration-form__input.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.duration-form__submit {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Error message (red) */
+.duration-form__error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  min-height: 1.2em; /* prevent layout shift */
+  text-align: center;
+}
+
+/* Info/success message (muted) */
+.duration-form__info {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  min-height: 1.2em;
+  text-align: center;
+}
+
+/* =============================================================
+   17. ADD-LINK FORM — LinkManager (task 8.3)
+   Requirements: 6.3, 6.5, 6.6, 6.10
+   ============================================================= */
+.link-add-form {
+  width: 100%;
+}
+
+.link-add-form__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.link-add-form__name {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.link-add-form__url {
+  flex: 2 1 200px;
+  min-width: 0;
+}
+
+.link-add-form__submit {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* =============================================================
+   18. LINK ITEM — LinkManager (task 8.3)
+   Each item holds a .link-btn anchor and a delete button.
+   Requirements: 6.1, 6.2, 6.7
+   ============================================================= */
+.link-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Ensure the link-list wraps items properly */
+.link-list {
+  flex-wrap: wrap;
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="To-Do Life Dashboard — Greeting, Focus Timer, Todo Manager, dan Link Manager dalam satu halaman." />
+  <title>To-Do Life Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- =====================================================
+       App Header — branding + theme toggle (task 3.2)
+       ===================================================== -->
+  <header class="app-header" role="banner">
+    <h1 class="app-title">To-Do Life Dashboard</h1>
+    <!-- Theme toggle button (task 3.2) -->
+    <div id="theme-toggle-container">
+      <button
+        id="theme-toggle-btn"
+        class="btn btn-secondary theme-toggle-btn"
+        type="button"
+        aria-label="Beralih ke tema gelap"
+        title="Beralih tema"
+      >
+        <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+        <span id="theme-toggle-label" class="theme-toggle-label">Gelap</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       Main content — four widget sections
+       ===================================================== -->
+  <main class="app-main" role="main">
+
+    <!-- ---------------------------------------------------
+         1. Greeting Widget
+         Displays current time, date, and a personalised
+         greeting. Name form populated by task 4.3.
+         Requirements: 1.x, 2.x
+         --------------------------------------------------- -->
+    <section id="greeting-section" class="widget greeting-widget" aria-label="Sapaan dan waktu">
+      <div id="greeting-clock" class="greeting-clock" aria-live="polite" aria-atomic="true">
+        <!-- Time string updated every second by GreetingWidget.startClock() -->
+        <span id="greeting-time" class="greeting-time">--:--:--</span>
+      </div>
+      <div id="greeting-date" class="greeting-date" aria-live="polite">
+        <!-- Formatted date updated every second -->
+        <span id="greeting-date-text">--</span>
+      </div>
+      <div id="greeting-text" class="greeting-text" aria-live="polite">
+        <!-- Greeting phrase e.g. "Selamat Pagi, …" -->
+        <span id="greeting-message"></span>
+      </div>
+      <!-- Name input form — shown when no name stored; added by task 4.3 -->
+      <div id="greeting-name-form-container"></div>
+      <!-- Change-name button — added by task 4.3 -->
+      <div id="greeting-name-actions"></div>
+    </section>
+
+    <!-- ---------------------------------------------------
+         2. Focus Timer (Pomodoro)
+         State-machine countdown. Buttons added by task 6.3.
+         Duration input added by task 6.4.
+         Requirements: 3.x, 4.x
+         --------------------------------------------------- -->
+    <section id="timer-section" class="widget focus-timer-widget" aria-label="Timer fokus">
+      <h2 class="widget-title">Timer Fokus</h2>
+      <div id="timer-display" class="timer-display" role="timer" aria-live="off" aria-atomic="true">
+        <!-- MM:SS string rendered by FocusTimer.tick() / updateDisplay() -->
+        <span id="timer-time" class="timer-time">25:00</span>
+      </div>
+      <!-- Visual completion indicator — activated by task 10.2 -->
+      <div id="timer-status" class="timer-status" aria-live="assertive"></div>
+      <!-- Control buttons — added by task 6.3 -->
+      <div id="timer-controls" class="timer-controls"></div>
+      <!-- Custom duration input — added by task 6.4 -->
+      <div id="timer-duration-container" class="timer-duration-container"></div>
+    </section>
+
+    <!-- ---------------------------------------------------
+         3. Todo Manager
+         CRUD task list. Full UI added by task 7.3.
+         Requirements: 5.x
+         --------------------------------------------------- -->
+    <section id="todo-section" class="widget todo-widget" aria-label="Daftar tugas">
+      <h2 class="widget-title">Daftar Tugas</h2>
+      <!-- Add-todo input row — added by task 7.3 -->
+      <div id="todo-input-container" class="todo-input-container"></div>
+      <!-- Rendered list of todo items — populated by TodoManager.render() -->
+      <ul id="todo-list" class="todo-list" aria-label="Tugas-tugas saya" role="list">
+        <!-- Todo items injected here by task 7.3 -->
+      </ul>
+    </section>
+
+    <!-- ---------------------------------------------------
+         4. Link Manager
+         Quick-access link buttons. Full UI added by task 8.3.
+         Requirements: 6.x
+         --------------------------------------------------- -->
+    <section id="link-section" class="widget link-widget" aria-label="Tautan cepat">
+      <h2 class="widget-title">Tautan Cepat</h2>
+      <!-- Add-link form — added by task 8.3 -->
+      <div id="link-form-container" class="link-form-container"></div>
+      <!-- Rendered quick-link buttons — populated by LinkManager.render() -->
+      <div id="link-list" class="link-list" role="list" aria-label="Tautan cepat saya">
+        <!-- Link buttons injected here by task 8.3 -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App footer -->
+  <footer class="app-footer" role="contentinfo">
+    <p class="footer-text">To-Do Life Dashboard &mdash; Data tersimpan di browser Anda.</p>
+  </footer>
+
+  <!-- Single JS bundle, deferred so DOM is fully parsed first -->
+  <script src="js/app.js" defer></script>
+</body>
+</html>
